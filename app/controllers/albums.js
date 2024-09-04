@@ -30,7 +30,7 @@ const Albums = class Albums {
           });
         });
       } catch (err) {
-        console.error(`[ERROR] album/create -> ${err}`);
+        console.error(`[ERROR] create album/ -> ${err}`);
 
         res.status(400).json({
           code: 400,
@@ -67,7 +67,7 @@ const Albums = class Albums {
           });
         });
       } catch (err) {
-        console.error(`[ERROR] album/:id -> ${err}`);
+        console.error(`[ERROR] delete album/:id -> ${err}`);
 
         res.status(400).json({
           code: 400,
@@ -96,14 +96,14 @@ const Albums = class Albums {
           }
           res.status(200).json(updatedAlbum);
         }).catch((err) => {
-          console.error(`[ERROR] album/:id -> ${err}`);
+          console.error(`[ERROR] update album/:id -> ${err}`);
           res.status(500).json({
             code: 500,
             message: 'Internal Server Error'
           });
         });
       } catch (err) {
-        console.error(`[ERROR] album/:id -> ${err}`);
+        console.error(`[ERROR] update album/:id -> ${err}`);
         res.status(400).json({
           code: 400,
           message: 'Bad Request'
@@ -146,7 +146,7 @@ const Albums = class Albums {
           });
         });
       } catch (err) {
-        console.error(`[ERROR] album/:id -> ${err}`);
+        console.error(`[ERROR] albums -> ${err}`);
 
         res.status(400).json({
           code: 400,
@@ -168,7 +168,7 @@ const Albums = class Albums {
           });
         });
       } catch (err) {
-        console.error(`[ERROR] album/:id -> ${err}`);
+        console.error(`[ERROR] /:album_id/photos -> ${err}`);
 
         res.status(400).json({
           code: 400,
