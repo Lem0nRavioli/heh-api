@@ -77,6 +77,41 @@ const Albums = class Albums {
     });
   }
 
+  updateAlbum() {
+    this.app.put('/album/:id', (req, res) => {
+      try {
+        const updateData = req.body;
+  
+        // Exclude `photos` field from updateData if present
+        if (updateData.photos) {
+          delete updateData.photos;
+        }
+        
+        this.AlbumModel.findByIdAndUpdate(req.params.id, updateData, { new: true }).then((updatedAlbum) => {
+          if (!updatedAlbum) {
+            return res.status(404).json({
+              code: 404,
+              message: 'Album not found'
+            });
+          }
+          res.status(200).json(updatedAlbum);
+        }).catch((err) => {
+          console.error(`[ERROR] album/:id -> ${err}`);
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server Error'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] album/:id -> ${err}`);
+        res.status(400).json({
+          code: 400,
+          message: 'Bad Request'
+        });
+      }
+    });
+  }
+
   showById() {
     this.app.get('/album/:id', (req, res) => {
       try {
@@ -147,6 +182,7 @@ const Albums = class Albums {
   run() {
     this.create();
     this.deleteById();
+    this.updateAlbum();
     this.showById();
     this.showAllAlbums();
     this.showAllAlbumPhotos();
