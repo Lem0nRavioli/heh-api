@@ -6,7 +6,7 @@ const PhotoSchema = new mongoose.Schema({
   description: String,
   album: {
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'albums'
+    ref: 'Album'
 }}, {
   collection: 'photos',
   versionKey: false

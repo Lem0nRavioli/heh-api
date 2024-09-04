@@ -99,10 +99,57 @@ const Albums = class Albums {
     });
   }
 
+  showAllAlbums() {
+    this.app.get('/albums', (req, res) => {
+      try {
+        this.AlbumModel.find().then((albums) => {
+          res.status(200).json(albums || {});
+        }).catch(() => {
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] album/:id -> ${err}`);
+
+        res.status(400).json({
+          code: 400,
+          message: 'Bad request'
+        });
+      }
+    });
+  }
+
+  showAllAlbumPhotos() {
+    this.app.get('/:album_id/photos', (req, res) => {
+      try {
+        this.AlbumModel.findById(req.params.album_id).populate('photos').then((album) => {
+          res.status(200).json(album.photos || {});
+        }).catch(() => {
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] album/:id -> ${err}`);
+
+        res.status(400).json({
+          code: 400,
+          message: 'Bad request'
+        });
+      }
+    });
+  }
+  
+
   run() {
     this.create();
-    this.showById();
     this.deleteById();
+    this.showById();
+    this.showAllAlbums();
+    this.showAllAlbumPhotos();
   }
 }
 

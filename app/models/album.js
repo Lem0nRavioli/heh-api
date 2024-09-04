@@ -4,7 +4,7 @@ const AlbumSchema = new mongoose.Schema({
   title: String,
   description: String,
   photos: [
-    {type: mongoose.Schema.Types.ObjectId, ref: 'photos'}
+    {type: mongoose.Schema.Types.ObjectId, ref: 'Photo'}
   ]
 }, {
   collection: 'albums',
