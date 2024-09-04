@@ -156,6 +156,58 @@ const Photos = class Photos {
       }
     });
   }
+
+  updatePhotoInAlbum() {
+    this.app.put('/album/:album_id/photo/:photo_id', (req, res) => {
+      try {
+        const { album_id, photo_id } = req.params;
+        
+        this.AlbumModel.findById(album_id).then((album) => {
+          if (!album) {
+            return res.status(404).json({
+              code: 404,
+              message: 'Album not found'
+            });
+          }
+  
+          if (!album.photos.includes(photo_id)) {
+            return res.status(404).json({
+              code: 404,
+              message: 'Photo not found in this album'
+            });
+          }
+  
+          this.PhotoModel.findByIdAndUpdate(photo_id, req.body, { new: true }).then((updatedPhoto) => {
+            if (!updatedPhoto) {
+              return res.status(404).json({
+                code: 404,
+                message: 'Photo not found'
+              });
+            }
+            res.status(200).json(updatedPhoto);
+          }).catch(() => {
+            res.status(500).json({
+              code: 500,
+              message: 'Internal Server error while updating photo'
+            });
+          });
+        }).catch(() => {
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error while retrieving album'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] album/:album_id/photo/:photo_id -> ${err}`);
+    
+        res.status(400).json({
+          code: 400,
+          message: 'Bad request'
+        });
+      }
+    });
+  }
+  
   
 
   run() {
@@ -164,6 +216,7 @@ const Photos = class Photos {
     this.deleteById();
     this.showAll();
     this.updateById();
+    this.updatePhotoInAlbum();
   }
 }
 
