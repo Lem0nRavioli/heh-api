@@ -1,0 +1,39 @@
+SETUP UBUNTU WSL
+    turn windows features on => Windows subsystem Linux + virtualization
+    microsoft store => ubuntu => get
+    sudo 
+    sudo apt update
+    sudo apt upgrade
+    (history (to see command history) // ctrl + R history select) 
+    install nvm : curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    source .bashrc
+
+START UBUNTU SHELL
+    list all wsl : wsl -l
+    delete a distro: wsl --unregister <name>
+    set default: wsl --set-default <distro name>
+    connect: 
+        Ubuntu
+        wsl Ubuntu
+        wsl (once default setted)
+        wsl --distribution Ubuntu --user <username>
+
+SETUP NPM/NVM
+    nvm --version
+    nvm install 18
+    node --version
+    nvm list
+    (swap) nvm use 18
+
+SETUP git + pm2
+    git clone https://gitlab.com/xzen769/api.git
+    cd api/
+    git checkout express-mongodb-atlas-jwt
+    code .
+    npm install pm2@latest -g
+    npm run dev (ctrl + c stop)
+    pm2 start "npm run dev"
+    pm2 list
+    pm2 delete <appname>
+    (npm install -g nodemon)
+    (nodemon --exec npm run dev)
