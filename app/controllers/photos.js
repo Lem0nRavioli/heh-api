@@ -106,10 +106,64 @@ const Photos = class Photos {
     });
   }
 
+  showAll() {
+    this.app.get('/photos', (req, res) => { 
+      try {
+        this.PhotoModel.find().then((photos) => {
+          res.status(200).json(photos ||{});
+        }).catch(() => {
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] /photos -> ${err}`);
+  
+        res.status(400).json({
+          code: 400,
+          message: 'Bad request'
+        });
+      }
+    });
+  }
+  
+  updateById() {
+    this.app.put('/photo/:id', (req, res) => {
+      try {
+        this.PhotoModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).then((photo) => {
+          if (photo) {
+            res.status(200).json(photo);
+          } else {
+            res.status(404).json({
+              code: 404,
+              message: 'Photo not found'
+            });
+          }
+        }).catch(() => {
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error while updating photo'
+          });
+        });
+      } catch (err) {
+        console.error(`[ERROR] photo/:id -> ${err}`);
+  
+        res.status(400).json({
+          code: 400,
+          message: 'Bad request'
+        });
+      }
+    });
+  }
+  
+
   run() {
     this.create();
     this.showById();
     this.deleteById();
+    this.showAll();
+    this.updateById();
   }
 }
 
