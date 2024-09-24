@@ -2,6 +2,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const rateLimit = require('express-rate-limit')
 
 // Dependencies middleware
 const bodyParser = require('body-parser')
@@ -60,6 +61,17 @@ module.exports = class Server {
    * Middleware
    */
   middleware () {
+
+    const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 2,
+      standardHeaders: 'draft-7',
+      legacyHeaders: false,
+    })
+
+    // Apply rate-limiter to all requests
+    this.app.use(limiter)
+
     this.app.use(compression())
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({ 'extended': true }))
