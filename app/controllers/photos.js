@@ -14,6 +14,7 @@ const Photos = class Photos {
 
   create() {
     this.app.post('/photo/', [
+        this.authenticateToken,
         // Validate and sanitize title
         body('title').trim().escape(),
         // Validate and sanitize url
@@ -28,7 +29,7 @@ const Photos = class Photos {
 
         newPhoto.save().then((photo) => {
           // Add photo to album
-          this.AlbumModel.findByIdAndUpdate(photo.album, { 
+          this.AlbumModel.findByIdAndUpdate(photo.album, {
             $push: { photos: photo._id }
           }).then(() => {
             res.status(200).json(photo || {});
@@ -57,6 +58,7 @@ const Photos = class Photos {
 
   deleteById() {
     this.app.delete('/photo/:id', [
+      this.authenticateToken,
       param('id').trim().escape()
     ], (req, res) => {
       try {
@@ -121,7 +123,7 @@ const Photos = class Photos {
   }
 
   showAll() {
-    this.app.get('/photos', (req, res) => { 
+    this.app.get('/photos', (req, res) => {
       try {
         this.PhotoModel.find().then((photos) => {
           res.status(200).json(photos ||{});
@@ -133,7 +135,7 @@ const Photos = class Photos {
         });
       } catch (err) {
         console.error(`[ERROR] /photos -> ${err}`);
-  
+
         res.status(400).json({
           code: 400,
           message: 'Bad request'
@@ -141,9 +143,10 @@ const Photos = class Photos {
       }
     });
   }
-  
+
   updateById() {
     this.app.put('/photo/:id', [
+      this.authenticateToken,
       param('id').trim().escape()
     ], (req, res) => {
       try {
@@ -164,7 +167,7 @@ const Photos = class Photos {
         });
       } catch (err) {
         console.error(`[ERROR] photo/:id -> ${err}`);
-  
+
         res.status(400).json({
           code: 400,
           message: 'Bad request'
@@ -175,12 +178,13 @@ const Photos = class Photos {
 
   updatePhotoInAlbum() {
     this.app.put('/album/:album_id/photo/:photo_id', [
+      this.authenticateToken,
       param('album_id').trim().escape(),
       param('photo_id').trim().escape(),
     ], (req, res) => {
       try {
         const { album_id, photo_id } = req.params;
-        
+
         this.AlbumModel.findById(album_id).then((album) => {
           if (!album) {
             return res.status(404).json({
@@ -188,14 +192,14 @@ const Photos = class Photos {
               message: 'Album not found'
             });
           }
-  
+
           if (!album.photos.includes(photo_id)) {
             return res.status(404).json({
               code: 404,
               message: 'Photo not found in this album'
             });
           }
-  
+
           this.PhotoModel.findByIdAndUpdate(photo_id, req.body, { new: true }).then((updatedPhoto) => {
             if (!updatedPhoto) {
               return res.status(404).json({
@@ -218,7 +222,7 @@ const Photos = class Photos {
         });
       } catch (err) {
         console.error(`[ERROR] album/:album_id/photo/:photo_id -> ${err}`);
-    
+
         res.status(400).json({
           code: 400,
           message: 'Bad request'
@@ -226,8 +230,8 @@ const Photos = class Photos {
       }
     });
   }
-  
-  
+
+
 
   run() {
     this.create();

@@ -33,7 +33,7 @@ const Users = class Users {
           })
         } catch (err) {
           console.error(`[ERROR] users/:id -> ${err}`)
-  
+
           res.status(400).json({
             code: 400,
             message: 'Bad request'
@@ -73,30 +73,27 @@ const Users = class Users {
    * Create
    */
   create () {
-    this.app.post('/user/', [
-      // Minimal sanitization
-      body('name').trim().escape(),
-      body('role').trim().escape(),
-      body('avatar').trim().escape(),
-    ], (req, res) => {
+    this.app.post('/user/', this.authenticateToken, (req, res) => {  // Apply authenticateToken middleware
       try {
-        const userModel = new this.UserModel(req.body)
-
+        const userModel = new this.UserModel(req.body);
         userModel.save().then((user) => {
-          res.status(200).json(user || {})
+          res.status(200).json(user || {});
         }).catch(() => {
-          res.status(200).json({})
-        })
+          res.status(500).json({
+            code: 500,
+            message: 'Internal Server error'
+          });
+        });
       } catch (err) {
-        console.error(`[ERROR] users/create -> ${err}`)
-
+        console.error(`[ERROR] users/create -> ${err}`);
         res.status(400).json({
           code: 400,
           message: 'Bad request'
-        })
+        });
       }
-    })
+    });
   }
+
 
   /**
    * Run

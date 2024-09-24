@@ -19,6 +19,7 @@ const Albums = class Albums {
 
   create() {
     this.app.post('/album/', [
+      this.authenticateToken,
         // Validate and sanitize title
         body('title').trim().escape(),
         // Validate and sanitize description
@@ -51,6 +52,7 @@ const Albums = class Albums {
 
   deleteById() {
     this.app.delete('/album/:id', [
+      this.authenticateToken,
       param('id').trim().escape()
     ], (req, res) => {
       try {
@@ -90,16 +92,17 @@ const Albums = class Albums {
 
   updateAlbum() {
     this.app.put('/album/:id', [
+      this.authenticateToken,
       param('id').trim().escape()
     ], (req, res) => {
       try {
         const updateData = req.body;
-  
+
         // Exclude `photos` field from updateData if present
         if (updateData.photos) {
           delete updateData.photos;
         }
-        
+
         this.AlbumModel.findByIdAndUpdate(req.params.id, updateData, { new: true }).then((updatedAlbum) => {
           if (!updatedAlbum) {
             return res.status(404).json({
@@ -173,6 +176,7 @@ const Albums = class Albums {
 
   showAllAlbumPhotos() {
     this.app.get('/:album_id/photos',  [
+
       param('album_id').trim().escape()
     ], (req, res) => {
       try {
@@ -194,7 +198,7 @@ const Albums = class Albums {
       }
     });
   }
-  
+
 
   run() {
     this.create();
