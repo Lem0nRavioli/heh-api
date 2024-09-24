@@ -37,3 +37,13 @@ SETUP git + pm2
     pm2 delete <appname>
     (npm install -g nodemon)
     (nodemon --exec npm run dev)
+
+
+
+NEW 2024/09/24
+    - update packages
+        npm audit fix
+    - limit rate (express limit rate)
+    - https
+    - jwt
+    - validateurs (against xss)
