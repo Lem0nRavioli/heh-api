@@ -17,6 +17,6 @@
     "helmet": "^5.0.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.2.4",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.7"
   }
 }
