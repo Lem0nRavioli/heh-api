@@ -1,5 +1,6 @@
 const PhotoModel = require('../models/photo.js');
 const AlbumModel = require('../models/album.js');
+const { body, param } = require('express-validator');
 
 const Photos = class Photos {
   constructor(app, connect, authenticateToken) {
@@ -12,7 +13,16 @@ const Photos = class Photos {
   }
 
   create() {
-    this.app.post('/photo/', (req, res) => {
+    this.app.post('/photo/', [
+        // Validate and sanitize title
+        body('title').trim().escape(),
+        // Validate and sanitize url
+        body('url').trim().escape(),
+        // Validate and sanitize description
+        body('description').trim().escape(),
+        // Validate album is a MongoDB ObjectId
+        body('album').trim().escape()
+      ], (req, res) => {
       try {
         const newPhoto = new this.PhotoModel(req.body);
 
@@ -46,7 +56,9 @@ const Photos = class Photos {
   }
 
   deleteById() {
-    this.app.delete('/photo/:id', (req, res) => {
+    this.app.delete('/photo/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.PhotoModel.findByIdAndDelete(req.params.id).then((photo) => {
           if (photo) {
@@ -85,7 +97,9 @@ const Photos = class Photos {
   }
 
   showById() {
-    this.app.get('/photo/:id', (req, res) => {
+    this.app.get('/photo/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.PhotoModel.findById(req.params.id).then((photo) => {
           res.status(200).json(photo || {});
@@ -129,7 +143,9 @@ const Photos = class Photos {
   }
   
   updateById() {
-    this.app.put('/photo/:id', (req, res) => {
+    this.app.put('/photo/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.PhotoModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).then((photo) => {
           if (photo) {
@@ -158,7 +174,10 @@ const Photos = class Photos {
   }
 
   updatePhotoInAlbum() {
-    this.app.put('/album/:album_id/photo/:photo_id', (req, res) => {
+    this.app.put('/album/:album_id/photo/:photo_id', [
+      param('album_id').trim().escape(),
+      param('photo_id').trim().escape(),
+    ], (req, res) => {
       try {
         const { album_id, photo_id } = req.params;
         

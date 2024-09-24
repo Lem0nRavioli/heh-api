@@ -1,5 +1,6 @@
 const AlbumModel = require('../models/album.js');
 const PhotoModel = require('../models/photo.js');
+const { body, param } = require('express-validator');
 
 const Albums = class Albums {
   /**
@@ -17,7 +18,15 @@ const Albums = class Albums {
   }
 
   create() {
-    this.app.post('/album/', (req, res) => {
+    this.app.post('/album/', [
+        // Validate and sanitize title
+        body('title').trim().escape(),
+        // Validate and sanitize description
+        body('description').trim().escape(),
+        // Validate photos as an array of MongoDB ObjectIds
+        body('photos').trim().escape(),
+        body('photos.*').trim().escape()
+      ], (req, res) => {
       try {
         const newAlbum = new this.AlbumModel(req.body);
 
@@ -41,7 +50,9 @@ const Albums = class Albums {
   }
 
   deleteById() {
-    this.app.delete('/album/:id', (req, res) => {
+    this.app.delete('/album/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.AlbumModel.findByIdAndDelete(req.params.id).then((album) => {
           if (album) {
@@ -78,7 +89,9 @@ const Albums = class Albums {
   }
 
   updateAlbum() {
-    this.app.put('/album/:id', (req, res) => {
+    this.app.put('/album/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         const updateData = req.body;
   
@@ -113,7 +126,9 @@ const Albums = class Albums {
   }
 
   showById() {
-    this.app.get('/album/:id', (req, res) => {
+    this.app.get('/album/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.AlbumModel.findById(req.params.id).then((album) => {
           res.status(200).json(album || {});
@@ -157,7 +172,9 @@ const Albums = class Albums {
   }
 
   showAllAlbumPhotos() {
-    this.app.get('/:album_id/photos', (req, res) => {
+    this.app.get('/:album_id/photos',  [
+      param('album_id').trim().escape()
+    ], (req, res) => {
       try {
         this.AlbumModel.findById(req.params.album_id).populate('photos').then((album) => {
           res.status(200).json(album.photos || {});

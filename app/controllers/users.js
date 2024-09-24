@@ -1,4 +1,5 @@
 const UserModel = require('../models/user.js')
+const { body, param } = require('express-validator');
 
 const Users = class Users {
   /**
@@ -18,7 +19,9 @@ const Users = class Users {
    * Delete by id
    */
     deleteById () {
-      this.app.delete('/user/:id', (req, res) => {
+      this.app.delete('/user/:id', [
+        param('id').trim().escape()
+      ], (req, res) => {
         try {
           this.UserModel.findByIdAndDelete(req.params.id).then((user) => {
             res.status(200).json(user || {})
@@ -43,7 +46,9 @@ const Users = class Users {
    * Show by id
    */
   showById () {
-    this.app.get('/user/:id',  (req, res) => {
+    this.app.get('/user/:id', [
+      param('id').trim().escape()
+    ], (req, res) => {
       try {
         this.UserModel.findById(req.params.id).then((user) => {
           res.status(200).json(user || {})
@@ -68,7 +73,12 @@ const Users = class Users {
    * Create
    */
   create () {
-    this.app.post('/user/', (req, res) => {
+    this.app.post('/user/', [
+      // Minimal sanitization
+      body('name').trim().escape(),
+      body('role').trim().escape(),
+      body('avatar').trim().escape(),
+    ], (req, res) => {
       try {
         const userModel = new this.UserModel(req.body)
 

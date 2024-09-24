@@ -43,7 +43,9 @@ SETUP git + pm2
 NEW 2024/09/24
     - update packages
         npm audit fix
-    - limit rate (express limit rate)
+    - limit rate
+        express limit rate
     - https
     - jwt
     - validateurs (against xss)
+        express-validator

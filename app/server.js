@@ -64,7 +64,7 @@ module.exports = class Server {
 
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
-      limit: 2,
+      limit: 30,
       standardHeaders: 'draft-7',
       legacyHeaders: false,
     })
