@@ -1,6 +1,11 @@
 // Dependencies
 const express = require('express')
 const mongoose = require('mongoose')
+
+// https thingies
+const https = require('https');
+const fs = require('fs');
+
 const jwt = require('jsonwebtoken')
 const rateLimit = require('express-rate-limit')
 
@@ -127,7 +132,17 @@ module.exports = class Server {
       this.security()
       this.middleware()
       this.routes()
-      this.app.listen(this.config.port)
+      // this.app.listen(this.config.port)
+      // Load SSL certificate and key
+      const sslOptions = {
+        key: fs.readFileSync(__dirname + '/ssl/server.key'),
+        cert: fs.readFileSync(__dirname + '/ssl/server.cert'),
+      };
+
+      // Create HTTPS server
+      https.createServer(sslOptions, this.app).listen(this.config.port_https, () => {
+        console.log(`HTTPS Server running on port ${this.config.port_https}`);
+      });
     } catch (err) {
       console.error(`[ERROR] Server -> ${err}`)
     }

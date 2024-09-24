@@ -46,6 +46,10 @@ NEW 2024/09/24
     - limit rate
         express limit rate
     - https
+        wsl ubuntu
+        mkdir ssl && cd ssl
+        openssl req -nodes -new -x509 -keyout server.key -out server.cert -days 365
+        put into repo
     - jwt
     - validateurs (against xss)
         express-validator
