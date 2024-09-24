@@ -42,7 +42,8 @@ SETUP git + pm2
 
 NEW 2024/09/24
     - update packages
-        npm audit fix
+        npm audit
+        npm audit fix + "prayers"
     - limit rate
         express limit rate
     - https
@@ -51,5 +52,6 @@ NEW 2024/09/24
         openssl req -nodes -new -x509 -keyout server.key -out server.cert -days 365
         put into repo
     - jwt
+        added authenticateToken to Create/Update/Delete controllers
     - validateurs (against xss)
         express-validator
